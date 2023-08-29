@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/error");
 const passport = require("passport");
 var cors = require("cors");
+var session = require("express-session");
 
 // Load env vars
 dotenv.config({ path: ".env" });
@@ -31,10 +32,20 @@ app.use(function (req, res, next) {
 });
 app.use(cors(corsOptions));
 
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
+
 // Cookie parser
 app.use(cookieParser());
 
 app.use(passport.initialize());
+app.use(passport.session());
 
 // Route files
 const auth = require("./routes/auth");
